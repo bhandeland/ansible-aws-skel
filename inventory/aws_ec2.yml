@@ -1,0 +1,38 @@
+plugin: aws_ec2
+boto_profile: my-aws-profile
+# Populate inventory with instances in these regions
+regions:
+  - us-east-1
+
+filters:
+  instance-state-name: ['running']
+compose:
+  ansible_host: private_ip_address
+  ansible_private_key_file: key_name | regex_replace('(.*)', '/opt/aws/keys/\1.pem')
+
+hostnames:
+  - tag:Name
+  - private_ip_address 
+
+include_extra_api_calls: yes
+strict: yes
+strict_permissions: yes
+
+keyed_groups:
+  - prefix: tag
+    key: tags
+  - prefix: aws
+    key: instance_type
+  - prefix: aws
+    key: 'security_groups|json_query("[].group_id")'
+  - prefix: "key"
+    seperator: "_"
+    key: key_name
+  - prefix: "ami"
+    seperator: ""
+    key: image_id | regex_replace('ami.(.*)', '\1')
+  - prefix: ""
+    seperator: ""
+    key: placement.region
+  - prefix: platform
+    key: 'platform | default("linux")'

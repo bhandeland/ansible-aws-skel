@@ -1,0 +1,3 @@
+---
+include: DJANGO/ec2-instances.yml
+incldue: DJANGO/RDS-instances.yml

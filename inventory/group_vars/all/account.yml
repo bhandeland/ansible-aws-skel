@@ -1,0 +1,16 @@
+---
+_local_aws_inventory: "{{ lookup('file', 'inventory/aws_ec2.yml') | from_yaml }}"
+_local_bastion: "{{ AWS_PROFILE | lower }}-bastion"
+_local_win_bastion: "{{ AWS_PROFILE | lower }}-win-bastion"
+
+AWS_DEFAULT_REGION: "{{ _local_aws_inventory.regions[0] }}"
+AWS_PROFILE: "{{ _local_aws_inventory.boto_profile }}"
+# Compatibility stuff
+aws_default_region: "{{ AWS_DEFAULT_REGION }}"
+aws_profile: "{{ AWS_PROFILE }}"
+# Detect which cloud we are in
+aws_cloud: "{{ 'aws-us-gov' if gov in aws_default_region else 'aws' }}"
+aws_account_alias: "{{ AWS_PROFILE }}"
+
+ansible_user: ec2-user
+ansible_ssh_common_args: "-o ProxyJump=ubuntu@{{ _local_bastion }}"
