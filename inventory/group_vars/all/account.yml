@@ -12,5 +12,9 @@ aws_profile: "{{ AWS_PROFILE }}"
 aws_cloud: "{{ 'aws-us-gov' if gov in aws_default_region else 'aws' }}"
 aws_account_alias: "{{ AWS_PROFILE }}"
 
+aws_connection_info: &aws_connection_info
+  aws_region: "{{ aws_default_region }}"
+  aws_profile: "{{ aws_profile }}"
+
 ansible_user: ec2-user
 ansible_ssh_common_args: "-o ProxyJump=ubuntu@{{ _local_bastion }}"
